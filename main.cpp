@@ -1,36 +1,58 @@
+#ifdef __APPLE__
+    #include <GLUT/glut.h>
+#else
+    #include <GL/glut.h>
+#endif
 
-#include <iostream>
-#include <math.h>
+#include "libs/menu.h"
 
 using namespace std;
 
-#define windowWidth 600
-#define windowHeight 600
+#define windowWidth 900
+#define windowHeight 900
 
-// Função principal para desenhar
-void draw();
 
-// Funções para desenhar polígonos
-/*
-void retangle(float x, float y, float w, float h);
-void triangle(float x, float y, float h, float b);
-void circle(float x, float y, float radius);
-void strangePolygon(float x, float y);
-void anotherStrangePolygon(float x, float y);
-*/
+
+void draw(){
+    // Importante: Somente será desenhado o que estiver entre glClear e glEnd
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // A tela padrão do OpenGL tem suas coordenadas X e Y de -1 até 1
+    // Coordenada (-1 -1) é o canto inferior esquerdo
+    // Coordenada (-1 1) é o canto superior esquerdo
+    // Coordenada (0 0) é o centro da tela
+
+    bool MENU = true;
+    if(MENU) menu();
+    
+
+    glutSwapBuffers();
+}
+
+void timer(int){
+
+	processMenu();
+
+	glutPostRedisplay();
+	glutTimerFunc(1000/30, timer, 0);
+}
 
 int main(int argc, char** argv){
-  //----- Criar janela -----//
-  glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_RGB);
-  glutInitWindowSize(windowWidth, windowHeight);
-  glutInitWindowPosition(0, 0);
-  glutCreateWindow("TCC");
-  glClearColor(1.0, 1.0, 1.0, 1.0);// Limpa a tela (red, green, blue, alpha)
   
-  glutDisplayFunc(draw);// Define qual função irá desenhar
-  
-  glutMainLoop();
+    //----- Criar janela -----//
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_RGB);
+    glutInitWindowSize(windowWidth, windowHeight);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("TCC");
+    glClearColor(1.0, 1.0, 1.0, 1.0);// Limpa a tela (red, green, blue, alpha)
 
-  return 0;
+    glutDisplayFunc(draw);// Define qual função irá desenhar
+    glutTimerFunc(0, timer, 0); // clock
+    glutMainLoop();
+
+    return 0;
 }
+
+
+
