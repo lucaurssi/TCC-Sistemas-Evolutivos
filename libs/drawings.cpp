@@ -4,16 +4,19 @@
     #include <GL/glut.h>
 #endif
 #include <math.h>
+#include <string>
 
-typedef struct _bixinho{
-  float radius;
-  float x;
-  float y;
-  float theta;
-  float r,g,b;
-  float vel;// Agora o struct tambem tem a velocidade do bixinho
-}Bixinho;
+#define FONT GLUT_BITMAP_TIMES_ROMAN_24
 
+using namespace std;
+
+
+void setColor(float* color, float R, float G, float B){
+	color[0] = R;
+	color[1] = G;
+	color[2] = B;
+	return; 
+}
 
 void retangle(float x, float y, float w, float h, float*color){
   // Vai desenhar um polígono de 4 vértices
@@ -83,57 +86,24 @@ void anotherStrangePolygon(float x, float y, float*color){
   glEnd();
 }
 
-Bixinho CreateBixinho(float x, float y, float *color){
-    Bixinho A;  
 
-    A.radius = 0.05;
-    A.x = x;
-    A.y = y;
-    A.theta = ((rand()%20)-10)/10.0;
-    A.r = color[0];
-    A.g = color[1];
-    A.b = color[2];
-    A.vel = 0.015;
-
-    return A; 
+void RenderString(float x, float y, string string){  
+	
+	glColor3f(0, 0, 0); // black
+	glRasterPos2f(x, y); 
+	glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[0]); // write one character
+	
+	for(int i=1; i<(int)string.length(); i++){
+		x = (x*900)+ 2*glutBitmapWidth(FONT, string[i-1]); // move x by the width of the character
+		x = x/900;
+		glRasterPos2f(x, y);
+		glutBitmapCharacter(FONT, string[i]);
+	}
 }
 
-void drawBixinho(Bixinho bixinho){
-  // Função para desenhar o bixinho
-  float radius = bixinho.radius;
-  float x = bixinho.x;
-  float y = bixinho.y;
-  float theta = bixinho.theta;
 
-  //----- Desenha corpo do bixinho -----//
-  glColor3f(bixinho.r, bixinho.g, bixinho.b);// Bixinho verde
-  glBegin(GL_POLYGON);
-  for (int i = 0; i < 360; i+=5) {
-    glVertex2d( radius*cos(i/180.0*M_PI) + x, radius*sin(i/180.0*M_PI) + y);
-  }
-  glEnd();
 
-  //----- Desenha olho direito do bixinho -----//
-  float eyeRadius = radius/8;
-  float eyeDist = M_PI/6;
 
-  glColor3f(0, 0, 0);
-  glBegin(GL_POLYGON);
-  for (int i = 0; i < 360; i+=5) {
-    float shiftX = radius/2*cos(theta-eyeDist);
-    float shiftY = radius/2*sin(theta-eyeDist);
-    glVertex2d( eyeRadius*cos(i/180.0*M_PI) + x + shiftX, eyeRadius*sin(i/180.0*M_PI) + y + shiftY);
-  }
-  glEnd();
 
-  //----- Desenha olho esquerdo do bixinho -----//
-  glColor3f(0, 0, 0);
-  glBegin(GL_POLYGON);
-  for (int i = 0; i < 360; i+=5) {
-    float shiftX = radius/2*cos(theta+eyeDist);
-    float shiftY = radius/2*sin(theta+eyeDist);
 
-    glVertex2d( eyeRadius*cos(i/180.0*M_PI) + x + shiftX, eyeRadius*sin(i/180.0*M_PI) + y + shiftY);
-  }
-  glEnd();
-}
+

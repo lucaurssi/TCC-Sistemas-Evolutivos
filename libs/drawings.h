@@ -1,12 +1,9 @@
-typedef struct _bixinho{
-  float radius;
-  float x;  // posicao
-  float y;  // posicao
-  float theta;
-  float r,g,b;
-  float vel;
-}Bixinho;
+#include <string>
+#include <vector>
+ 
 
+// muda a cor na variavel
+void setColor(float* color, float R, float G, float B);
 
 // Funções para desenhar polígonos
 void retangle(float x, float y, float w, float h, float*color);
@@ -16,5 +13,5 @@ void strangePolygon(float x, float y, float*color);
 void anotherStrangePolygon(float x, float y, float*color);
 
 
-Bixinho CreateBixinho(float x, float y, float *color);
-void drawBixinho(Bixinho bixinho);
+// textos
+void RenderString(float x, float y, std::string string);
