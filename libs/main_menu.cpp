@@ -20,7 +20,7 @@ typedef struct _bixinho{
 }Bm; // Bixinho e menu
 
 vector<Bm> Bms;
-
+bool menuChange = true;
 
 
 
@@ -89,15 +89,18 @@ void moveBm(Bm *bixinho, float distance){
 	bixinho->y = bixinho->y + distance*sin(bixinho->theta);
 
 	// Impede que o wilson saia da tela
-	bixinho->x = bixinho->x>1 ? 0 : bixinho->x;
+	bixinho->x = bixinho->x>1 ? 0.03 : bixinho->x;
 	bixinho->y = bixinho->y>1 ? -1 : bixinho->y;
-	bixinho->x = bixinho->x<0 ? 1 : bixinho->x;
+	bixinho->x = bixinho->x<0.02 ? 1 : bixinho->x;
 	bixinho->y = bixinho->y<-1 ? 1 : bixinho->y;
 
 }
 
 void main_menu(){
 	float color[3];
+
+	setColor(color, 1, 1, 1);
+	retangle(0.5, 0, 1, 2, color); // limpa bixinhos
 
 	if(Bms.empty()) // cria bixinhos para serem desenhados
 		for(int i=0; i<10; i++){
@@ -113,25 +116,32 @@ void main_menu(){
 	
 	// ---- menu ----
 
-
-	// cinza
 	setColor(color, 0.7, 0.7, 0.7);
-	 
-	retangle(-0.5, 0, 1, 2, color); // pinta metade da tela de cinza
 	
+	if(!menuChange){// se nao apertar nada no menu, não precisa re-escrever o menu
+		retangle(-0.012, 0, 0.025, 2, color);
+		
 
-	// cinza, um pouco mais escuro
-	setColor(color, 0.5, 0.5, 0.5);
+	}else{
+	// cinza
+		menuChange = false;
 
-	retangle(-0.6, 0.8, 0.4, 0.1, color);
-	RenderString(-0.79, 0.78, "População inicial");
+		setColor(color, 0.7, 0.7, 0.7);
+		retangle(-0.5, 0, 1, 2, color); // pinta metade da tela de cinza
+		
 
-	retangle(-0.6, 0.6, 0.4, 0.1, color);
-	RenderString(-0.79, 0.58, ".");
+		// cinza, um pouco mais escuro
+		setColor(color, 0.5, 0.5, 0.5);
 
-	retangle(-0.6, 0.4, 0.4, 0.1, color);
-	RenderString(-0.79, 0.38, ".");
-	
+		retangle(-0.6, 0.8, 0.4, 0.1, color);
+		RenderString(-0.79, 0.78, "População inicial");
+
+		retangle(-0.6, 0.6, 0.4, 0.1, color);
+		RenderString(-0.79, 0.58, ".");
+
+		retangle(-0.6, 0.4, 0.4, 0.1, color);
+		RenderString(-0.79, 0.38, ".");
+	}
 	return;
 }		
 
@@ -149,8 +159,10 @@ void processMenu(){
 void menu_buttons(int x, int y, unsigned short int *menu_state){
 	if (x > 270 || x < 90) return; // esquerda e direta dos botoes
 
-	if (y < 112 && y > 65 ) *menu_state = 1;
-	else *menu_state = 2;
+	if (y < 112 && y > 65 ){
+		*menu_state = 1;
+		menuChange = true;
+	}else *menu_state = 2;
 
 	return;
 }

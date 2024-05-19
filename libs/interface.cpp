@@ -18,7 +18,7 @@ unsigned short int menu_state = 0;
 bool DEBUG = true;
 
 void interface(){
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT);
 
 	switch (menu_state){
 		case 0:
