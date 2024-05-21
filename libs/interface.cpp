@@ -7,6 +7,9 @@
 #include "main_menu.h"
 #include "drawings.h"
 #include "init_pop.h"
+#include "Selecao.h"
+#include "Crossover.h"
+
 
 #include <vector>
 #include <iostream>
@@ -27,6 +30,14 @@ void interface(){
 
 		case 1:
 			init_pop();
+			break;
+		
+		case 2:
+			Selecao();
+			break;
+
+		case 3:
+			Crossover();
 			break;
 
 		default:
@@ -52,6 +63,14 @@ void processInterface(){
 			processIPop();
 			break;
 
+		case 2:
+			processSelecao();
+			break;
+
+		case 3:
+			processCrossover();
+			break;
+
 		default:
 			cout << "E: unknown menu_state on processInterface()\n" ;
 			menu_state = 0;
@@ -75,6 +94,14 @@ void button_click(int button, int state, int x, int y){
 
 			case 1:
 				IPop_buttons(x, y, &menu_state);
+				break;
+			
+			case 2:
+				Selecao_buttons(x, y, &menu_state);
+				break;
+
+			case 3:
+				Crossover_buttons(x, y, &menu_state);
 				break;
 
 			default:

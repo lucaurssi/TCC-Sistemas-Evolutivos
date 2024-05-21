@@ -119,7 +119,7 @@ void main_menu(){
 	setColor(color, 0.7, 0.7, 0.7);
 	
 	if(!menuChange){// se nao apertar nada no menu, não precisa re-escrever o menu
-		retangle(-0.012, 0, 0.025, 2, color);
+		retangle(-0.014, 0, 0.026, 2, color); // limpa 
 		
 
 	}else{
@@ -137,10 +137,10 @@ void main_menu(){
 		RenderString(-0.79, 0.78, "População inicial");
 
 		retangle(-0.6, 0.6, 0.4, 0.1, color);
-		RenderString(-0.79, 0.58, ".");
+		RenderString(-0.79, 0.58, "Selecao");
 
 		retangle(-0.6, 0.4, 0.4, 0.1, color);
-		RenderString(-0.79, 0.38, ".");
+		RenderString(-0.79, 0.38, "Crossover");
 	}
 	return;
 }		
@@ -160,9 +160,15 @@ void menu_buttons(int x, int y, unsigned short int *menu_state){
 	if (x > 270 || x < 90) return; // esquerda e direta dos botoes
 
 	if (y < 112 && y > 65 ){
-		*menu_state = 1;
+		*menu_state = 1; // Iniciar Populacao
 		menuChange = true;
-	}else *menu_state = 2;
+	}else if (y < 200 && y > 150 ){
+		*menu_state = 2; // Selecao
+		menuChange = true;
+	}else if (y < 290 && y > 245 ){
+		*menu_state = 3; // Crossover
+		menuChange = true;
+	}
 
 	return;
 }

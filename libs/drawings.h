@@ -15,3 +15,5 @@ void anotherStrangePolygon(float x, float y, float*color);
 
 // textos
 void RenderString(float x, float y, std::string string);
+
+void draw_basic_menu(std::string title, int Nro_ind, int tipoGene, bool geneMenu, int Nro_selecao, int Nro_selecao_2);

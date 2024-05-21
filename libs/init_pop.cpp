@@ -262,8 +262,8 @@ void init_pop(){
 		
 		}
 
-		RenderString(-0.95, -0.10, "Escolha os genes e o numero de ");
-		RenderString(-0.95, -0.15, "individuos acima e clique em 'Run'.");
+		RenderString(-0.95, -0.30, "Escolha os genes e o numero de ");
+		RenderString(-0.95, -0.35, "individuos acima e clique em 'Run'.");
 
 	// --------------------------------------------------
 
@@ -275,6 +275,17 @@ void init_pop(){
 		
 		RenderString(-0.3, -0.92, "Run");
 		// --------------------------------------
+
+		if (N_ip){ // se atualizar clicando no run, abilita o botao NEXT
+			setColor(color, 0.2, 0.2, 0.2);
+			retangle(-0.55, -0.9, 0.2, 0.09, color); 
+			setColor(color, 0.5, 0.5, 0.5); // cinza escuro
+			retangle(-0.55, -0.9, 0.19, 0.08, color); 
+			
+			RenderString(-0.62, -0.92, "Next");
+			RenderString(-0.95, -0.75, "Clique em Next para passar");
+			RenderString(-0.95, -0.80, "para proxima faze.");
+		}
 	}
 	return;
 }		
@@ -295,11 +306,12 @@ void IPop_buttons(int x, int y, unsigned short int *menu_state){
 	IPChange = true;
 	
 	// voltar ao menu principal (<-- back)
-	if (x > 30 && x < 150 && y > 25 && y < 60)
+	if (x > 30 && x < 150 && y > 25 && y < 60){
+		N_ip = 0;
 		*menu_state = 0; 
 	
 	// run	
-	else if (x > 290 && x < 380 && y > 830 && y < 875){		
+	}else if (x > 290 && x < 380 && y > 830 && y < 875){		
 		if(Bips.empty()) // cria bixinhos para serem desenhados
 			for(int i=0; i<n_Bips; i++){
 				setColor(color, (rand()%255)/255.0, (rand()%255)/255.0, (rand()%255)/255.0);
@@ -308,7 +320,12 @@ void IPop_buttons(int x, int y, unsigned short int *menu_state){
 				Bips.push_back(A);
 			}
 		IPdraw = true;
-	
+
+	// Next	
+	}else if (x > 155 && x < 245 && y > 830 && y < 875){
+		N_ip =0;
+		*menu_state = *menu_state + 1;
+
 	// Nro individuos menu
 	}else if (y > 245 && y < 275){	
 			if (x > 220 && x < 250) n_Bips = 10;
