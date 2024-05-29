@@ -4,119 +4,38 @@
     #include <GL/glut.h>
 #endif
 #include "drawings.h"
+#include "Bixinhos.h"
+
 #include <math.h>
 #include <vector>
 
 using namespace std;
 
 
-typedef struct _bixinho{
-  float radius;
-  float x;
-  float y;
-  float theta;
-  float r,g,b;
-  float vel;
-}Bm; // Bixinho e menu
-
-vector<Bm> Bms;
+vector<Bixinho> Bms;
 bool menuChange = true;
 
-
-
-Bm CreateBm(float x, float y, float *color){
-    Bm A;  
-
-    A.radius = 0.05;
-    A.x = x;
-    A.y = y;
-    A.theta = ((rand()%20)-10)/10.0;
-    A.r = color[0];
-    A.g = color[1];
-    A.b = color[2];
-    A.vel = 0.010;
-
-    return A; 
-}
-
-void drawBm(Bm bixinho){
-  // Função para desenhar o bixinho
-  float radius = bixinho.radius;
-  float x = bixinho.x;
-  float y = bixinho.y;
-  float theta = bixinho.theta;
-
-  //----- Desenha corpo do bixinho -----//
-  glColor3f(bixinho.r, bixinho.g, bixinho.b);// Bixinho verde
-  glBegin(GL_POLYGON);
-  for (int i = 0; i < 360; i+=5) {
-    glVertex2d( radius*cos(i/180.0*M_PI) + x, radius*sin(i/180.0*M_PI) + y);
-  }
-  glEnd();
-
-  //----- Desenha olho direito do bixinho -----//
-  float eyeRadius = radius/8;
-  float eyeDist = M_PI/6;
-
-  glColor3f(0, 0, 0);
-  glBegin(GL_POLYGON);
-  for (int i = 0; i < 360; i+=5) {
-    float shiftX = radius/2*cos(theta-eyeDist);
-    float shiftY = radius/2*sin(theta-eyeDist);
-    glVertex2d( eyeRadius*cos(i/180.0*M_PI) + x + shiftX, eyeRadius*sin(i/180.0*M_PI) + y + shiftY);
-  }
-  glEnd();
-
-  //----- Desenha olho esquerdo do bixinho -----//
-  glColor3f(0, 0, 0);
-  glBegin(GL_POLYGON);
-  for (int i = 0; i < 360; i+=5) {
-    float shiftX = radius/2*cos(theta+eyeDist);
-    float shiftY = radius/2*sin(theta+eyeDist);
-
-    glVertex2d( eyeRadius*cos(i/180.0*M_PI) + x + shiftX, eyeRadius*sin(i/180.0*M_PI) + y + shiftY);
-  }
-  glEnd();
-}
-
-void moveBm(Bm *bixinho, float distance){
-		
-
-	bixinho->theta+= ((rand()%11)-5)/100.0 ; // atualiza angulo
-
-	// Para mover para onde ele está olhando (na direção theta)
-	bixinho->x = bixinho->x + distance*cos(bixinho->theta);
-	bixinho->y = bixinho->y + distance*sin(bixinho->theta);
-
-	// Impede que o wilson saia da tela
-	bixinho->x = bixinho->x>1 ? 0.03 : bixinho->x;
-	bixinho->y = bixinho->y>1 ? -1 : bixinho->y;
-	bixinho->x = bixinho->x<0.02 ? 1 : bixinho->x;
-	bixinho->y = bixinho->y<-1 ? 1 : bixinho->y;
-
-}
-
 void main_menu(){
-	float color[3];
+	unsigned char color[3];
 
-	setColor(color, 1, 1, 1);
+	setColor(color, 255, 255, 255);
 	retangle(0.5, 0, 1, 2, color); // limpa bixinhos
 
 	if(Bms.empty()) // cria bixinhos para serem desenhados
 		for(int i=0; i<10; i++){
-			setColor(color, (rand()%255)/255.0, (rand()%255)/255.0, (rand()%255)/255.0);
+			setColor(color, rand()%256, rand()%256, rand()%256);
 		
-			Bm A = CreateBm(rand()%10/10.0, ((rand()%20)-10)/10.0, color);
+			Bixinho A = CreateBixinho(rand()%10/10.0, ((rand()%20)-10)/10.0, color);
 			Bms.push_back(A);
 		}
 
 	
 	for(int i=0; i<10; i++)
-		drawBm(Bms[i]);
+		drawBixinho(Bms[i], 0);
 	
 	// ---- menu ----
 
-	setColor(color, 0.7, 0.7, 0.7);
+	setColor(color, LIGHT_GREY);
 	
 	if(!menuChange){// se nao apertar nada no menu, não precisa re-escrever o menu
 		retangle(-0.014, 0, 0.026, 2, color); // limpa 
@@ -126,12 +45,12 @@ void main_menu(){
 	// cinza
 		menuChange = false;
 
-		setColor(color, 0.7, 0.7, 0.7);
+		setColor(color, LIGHT_GREY);
 		retangle(-0.5, 0, 1, 2, color); // pinta metade da tela de cinza
 		
 
 		// cinza, um pouco mais escuro
-		setColor(color, 0.5, 0.5, 0.5);
+		setColor(color, GREY);
 
 		retangle(-0.6, 0.8, 0.4, 0.1, color);
 		RenderString(-0.79, 0.78, "População inicial");
@@ -140,7 +59,7 @@ void main_menu(){
 		RenderString(-0.79, 0.58, "Selecao");
 
 		retangle(-0.6, 0.4, 0.4, 0.1, color);
-		RenderString(-0.79, 0.38, "Crossover");
+		RenderString(-0.79, 0.38, "Reproducao");
 	}
 	return;
 }		
@@ -151,7 +70,7 @@ void processMenu(){
 
 	// Para mover os bixinhos
 	for(int i=0; i<10; i++)
-  		moveBm(&Bms[i], Bms[i].vel);
+  		moveBixinho(&Bms[i], Bms[i].vel);
 	return;
 
 }
