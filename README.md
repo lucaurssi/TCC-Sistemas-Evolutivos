@@ -6,6 +6,13 @@ Trabalho de conclusão de curso no curso de Bacharelado em Ciencias da Computaç
 ```
 $ sudo apt-get install mesa-common-dev
 $ sudo apt-get install freeglut3-dev
+git clone https://github.com/lucaurssi/TCC-Sistemas-Evolutivos.git
+```
+## Compilação e execução
+```
+cd TCC-Sistemas-Evolutivos
+make
+make run
 ```
 
 # Aluno
