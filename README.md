@@ -2,7 +2,9 @@
 Trabalho de conclusão de curso no curso de Bacharelado em Ciencias da Computação no ICMC da USP do ano de 2024-1.
 
 Author : Luca Gomes Urssi
+
 Disciplina : SCC0293 - Projeto de Graduação I
+
 Orientador : Eduardo do Valle Simões
 
 Titulo do Trabalho : 
