@@ -99,3 +99,71 @@ void moveBixinho(Bixinho *bixinho, float distance){
 	bixinho->y = bixinho->y<-1 ? 1 : bixinho->y;
 
 }
+
+
+void Repopulate(Sim_Var *SV, bool mutation){
+	char random_indv = rand()%SV->N;
+	Bixinho A;
+
+	if (SV->Breed) // if asexual, just copy another bixinho
+		A = SV->Bixinhos[random_indv];
+	
+	else{	// crossover
+		char random_indv2 = rand()%SV->N;
+
+		A.radius = 0.05;
+		A.x = SV->Bixinhos[random_indv].x;
+		A.y = SV->Bixinhos[random_indv2].y;
+		A.theta = ((rand()%20)-10)/10.0;
+		A.r = (SV->Bixinhos[random_indv].r + SV->Bixinhos[random_indv2].r)/2;
+		A.g = (SV->Bixinhos[random_indv].g + SV->Bixinhos[random_indv2].g)/2;
+		A.b = (SV->Bixinhos[random_indv].b + SV->Bixinhos[random_indv2].b)/2;
+		A.vel = 0.010;
+
+		if(rand()%2) A.shape = SV->Bixinhos[random_indv].shape;
+		else A.shape = SV->Bixinhos[random_indv2].shape;		
+	}
+
+    if(mutation){
+        if(SV->Mutation){ // fixed mutation value 
+            if(rand()%100 == 0) // 1% chance of changing shape
+                A.shape = (A.shape+1)%3; 
+
+            // +1/-1 in every primary color, unless it's the cap, 0 or 255
+            if(rand()%2) A.r = (A.r == 0) ? A.r : A.r-1;
+            else A.r = (A.r == 255) ? A.r : A.r+1;
+
+            if(rand()%2) A.g = (A.g == 0) ? A.g : A.g-1;
+            else A.g = (A.g == 255) ? A.g : A.g+1;
+
+            if(rand()%2) A.b = (A.b == 0) ? A.b : A.b-1;
+            else A.b = (A.b == 255) ? A.b : A.b+1;
+
+        }else{ // chaging mutation value
+            if(rand()%100 == 0) 
+                A.shape = (A.shape+1)%3; 
+
+            if(rand()%2) A.r = (A.r == 0) ? A.r : A.r-1;
+            else A.r = (A.r == 255) ? A.r : A.r+1;
+
+            if(rand()%2) A.g = (A.g == 0) ? A.g : A.g-1;
+            else A.g = (A.g == 255) ? A.g : A.g+1;
+
+            if(rand()%2) A.b = (A.b == 0) ? A.b : A.b-1;
+            else A.b = (A.b == 255) ? A.b : A.b+1;
+        }
+    }
+    
+
+	SV->Bixinhos.push_back(A);
+	SV->N++; 
+}
+
+
+
+
+
+
+
+
+

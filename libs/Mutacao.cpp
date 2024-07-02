@@ -15,74 +15,50 @@
 
 using namespace std;
 
-vector<Bixinho> mB;
-int nro_indv_visual = 10;
-int nro_indvidous = 0;
-
-int tipoGeme = 2;
-int G_m = 1;
-
-int SelecaoShapem = 0;
-int Blue_Shape = 0;
-
-int SelecaoCorm = 0;
-int Blue_Cor = 0;
-
-bool Blue_reproducao = true;
-bool SelecaoReproducaom = true;
-
-// rename to menu_change_flag
-bool MChange = true; // indica que ouve um click e deve redesenhar o menu
-
-// rename to run_flag
-bool Mdraw = false; // run foi clicado e deve iniciar a simulacao
-
-bool MnextPhase = false; // run foi clicado, bottao de next aparece
-
-bool MgeneMenu = false; // flag para desenhar o menu de multipla escolha de genes
 
 
-void Mutacao(){
+void Mutacao(Sim_Var *SV){
 	unsigned char color[3];
 	
 	setColor(color, WHITE);
-	retangle(0.5, 0, 1, 2, color); // limpa bixinhos
+	retangle(0.5, 0, 1, 2, color); 
 	
-	setColor(color, 255, 127, 127); // vermelho claro
-	retangle(0.5, -0.5, 0.3, 0.3, color); // quadrado de selecao
+	setColor(color, 255, 127, 127); 
+	retangle(0.5, -0.5, 0.3, 0.3, color);
 	
 	
-	if (Mdraw){ 
-		nro_indvidous 	= nro_indv_visual;
-		G_m 			= tipoGeme;		
-		SelecaoShapem 	= Blue_Shape;
-		SelecaoCorm 	= Blue_Cor;
-		SelecaoReproducaom = Blue_reproducao;
-		Mdraw 			= false;
+	if (SV->Run){ 
+		SV->N 	    = SV->N_menu;
+		SV->Gene 	= SV->Gene_menu;		
+		SV->Shape   = SV->Shape_menu;
+		SV->Cor     = SV->Cor_menu;
+		SV->Breed   = SV->Breed_menu;
+		SV->Mutation= SV->Mutation_menu;
+		SV->Run 	= false;
 				
 	}
 		
-	if (!mB.empty())
-		for(int i=0; i < nro_indvidous; i++)
-			drawBixinho(mB[i], G_m);
+	if (!SV->Bixinhos.empty())
+		for(int i=0; i < SV->N; i++)
+			drawBixinho(SV->Bixinhos[i], SV->Gene);
 	
 	
-	if(!MChange){// se nao apertar nada no menu, não precisa re-escrever o menu
+	if(!SV->Change){
 		setColor(color, LIGHT_GREY);		
 		retangle(-0.012, 0, 0.027, 2, color);
 
 	}else{
-		MChange = false;
-		draw_basic_menu("Mutacao");
+		SV->Change = false;
+		draw_basic_menu("Mutation");
 		
-		nro_individuos(-0.95, 0.7,nro_indv_visual);
-		tipo_de_gene(-0.95, 0.5, tipoGeme, MgeneMenu);	
-		draw_Selecao(-0.95, 0.4, tipoGeme, Blue_Shape, Blue_Cor);
-		draw_Reproducao(-0.95, 0.2, Blue_reproducao);
-
+		nro_individuos(-0.95, 0.7,SV->N_menu);
+		tipo_de_gene(-0.95, 0.5, SV->Gene_menu, SV->geneMenu);	
+		draw_Selecao(-0.95, 0.4, SV->Gene_menu, SV->Shape_menu, SV->Cor_menu);
+		draw_Reproducao(-0.95, 0.2, SV->Breed_menu);
+        draw_Mutacao(-0.95, 0, SV->Mutation_menu);
 	}
 
-	if (nro_indvidous){ // se atualizar clicando no run, abilita o botao NEXT
+	if (SV->N){
 		setColor(color, GREY);
 		retangle(-0.55, -0.9, 0.2, 0.09, color);
 		
@@ -95,35 +71,7 @@ void Mutacao(){
 }		
 
 
-void Repopulatem(){
-	char random_indv = rand()%nro_indvidous;
-	Bixinho A;
-
-	if (SelecaoReproducaom)
-		A = mB[random_indv];
-	
-	else{	
-		char random_indv2 = rand()%nro_indvidous;
-
-		A.radius = 0.05;
-		A.x = mB[random_indv].x;
-		A.y = mB[random_indv2].y;
-		A.theta = ((rand()%20)-10)/10.0;
-		A.r = (mB[random_indv].r + mB[random_indv2].r)/2;
-		A.g = (mB[random_indv].g + mB[random_indv2].g)/2;
-		A.b = (mB[random_indv].b + mB[random_indv2].b)/2;
-		A.vel = 0.010;
-
-		if(rand()%2) A.shape = mB[random_indv].shape;
-		else A.shape = mB[random_indv2].shape;		
-	}
-
-	mB.push_back(A);
-	nro_indvidous++; 
-}
-
-// move os bixinhos na tela de menu
-void processMutacao(){ 
+void processMutacao(Sim_Var *SV){ 
 	unsigned char color[3];
 
 	setColor(color, LIGHT_GREY);
@@ -132,144 +80,144 @@ void processMutacao(){
 	int right_shape = 0;
 	int right_color = 0;	
 
-	// Forma
-	if (tipoGeme == 0 || tipoGeme == 2) 		
-		for(int i=0; i<nro_indvidous; i++)
-	  		if (mB[i].shape == SelecaoShapem)
+	// Form
+	if (SV->Gene_menu == 0 || SV->Gene_menu == 2) 		
+		for(int i=0; i<SV->N; i++)
+	  		if (SV->Bixinhos[i].shape == SV->Shape)
 				right_shape++ ;
-	// Cor
-	if (tipoGeme == 1 || tipoGeme == 0){
-		if(SelecaoCorm == 0) 	// 0  -->	escuro/preto 	
-			for(int i=0; i<nro_indvidous; i++){
-		  		if (mB[i].r + mB[i].g + mB[i].b < 192)
+	// Color
+	if (SV->Gene_menu == 1 || SV->Gene_menu == 0){
+		if(SV->Cor == 0)	
+			for(int i=0; i<SV->N; i++){
+		  		if (SV->Bixinhos[i].r + SV->Bixinhos[i].g + SV->Bixinhos[i].b < 192)
 					right_color++ ;
 			}
-		else 				// 1 > claro/branco	
-			for(int i=0; i<nro_indvidous; i++){
-		  		if (mB[i].r + mB[i].g + mB[i].b > 512)
+		else 
+			for(int i=0; i<SV->N; i++){
+		  		if (SV->Bixinhos[i].r + SV->Bixinhos[i].g + SV->Bixinhos[i].b > 512)
 					right_color++ ;
 			}
 	}
 	
-	if(tipoGeme == 0 || tipoGeme == 2){
-		RenderString(-0.42, 0.28, "Forma:");
+	if(SV->Gene_menu == 0 || SV->Gene_menu == 2){
+		RenderString(-0.42, 0.28, "Form:");
 		RenderString(-0.25, 0.28, to_string(right_shape));
 	}	
 	
-	if(tipoGeme == 0 || tipoGeme == 1){
+	if(SV->Gene_menu == 0 || SV->Gene_menu == 1){
 		RenderString(-0.63, 0.28, "Cor:");
 		RenderString(-0.53, 0.28, to_string(right_color));
 	}
 
-	if(mB.empty()) return;	
+	if(SV->Bixinhos.empty()) return;	
 
-	// selecao
-	for(int i=0; i<nro_indvidous; i++){
-		
-		if (mB[i].x > 0.3 && mB[i].x < 0.7 && mB[i].y < -0.3 && mB[i].y > -0.7){ // Zona de Selecao
+	// selection
+	for(int i=0; i<SV->N; i++){
+		if (SV->Bixinhos[i].x > 0.3 && SV->Bixinhos[i].x < 0.7 && SV->Bixinhos[i].y < -0.3 && SV->Bixinhos[i].y > -0.7){ 
 				
-			// forma			
-			if (tipoGeme == 0 || tipoGeme == 2){
-				if (mB[i].shape != SelecaoShapem){ 
-					mB.erase(mB.begin()+i); 
-					nro_indvidous--; 
-					Repopulatem();
+			// form		
+			if (SV->Gene_menu == 0 || SV->Gene_menu == 2){
+				if (SV->Bixinhos[i].shape != SV->Shape){ 
+					SV->Bixinhos.erase(SV->Bixinhos.begin()+i); 
+					SV->N--; 
+					Repopulate(SV, true); // true on the mutation flag
 				}
 			
 			}
 	
-			// Cor
-			if (tipoGeme == 1 || tipoGeme == 0){
-				if(!SelecaoCorm){ // escuro/preto
-					if(mB[i].r + mB[i].g + mB[i].b > 192) { 
-						mB.erase(mB.begin()+i); 
-						nro_indvidous--;					
-						Repopulatem(); 
+			// Color
+			if (SV->Gene_menu == 1 || SV->Gene_menu == 0){
+				if(!SV->Cor){ 
+					if(SV->Bixinhos[i].r + SV->Bixinhos[i].g + SV->Bixinhos[i].b > 192) { 
+						SV->Bixinhos.erase(SV->Bixinhos.begin()+i); 
+						SV->N--;					
+						Repopulate(SV, true); 
 					}
-				}else			   // claro/branco
-					if(mB[i].r + mB[i].g + mB[i].b < 512) { 
-						mB.erase(mB.begin()+i); 
-						nro_indvidous--; 
-						Repopulatem();
+				}else
+					if(SV->Bixinhos[i].r + SV->Bixinhos[i].g + SV->Bixinhos[i].b < 512) { 
+						SV->Bixinhos.erase(SV->Bixinhos.begin()+i); 
+						SV->N--; 
+						Repopulate(SV, true);
 					}				
 			}
  		}
-		// bixinho não deletado pode mover
-		moveBixinho(&mB[i], mB[i].vel);
+		moveBixinho(&SV->Bixinhos[i], SV->Bixinhos[i].vel);
 	}
-	
 	return;
 }
 
-void Mutacao_buttons(int x, int y, unsigned short int *menu_state){
+void Mutacao_buttons(int x, int y, char *menu_state, Sim_Var *SV){
 	unsigned char color[3];
-	MChange = true;
+	SV->Change = true;
 	
-	// voltar ao menu principal (<-- back)
+	// back
 	if (x > 30 && x < 150 && y > 25 && y < 60){
-		nro_indvidous = 0;		
+		SV->N = 0;		
 		*menu_state = 0; 
 	
 	// run	
 	}else if (x > 290 && x < 380 && y > 830 && y < 875){		
 		
-		mB.clear(); 
+		SV->Bixinhos.clear(); 
 		
-		if(mB.empty() || (int)mB.size() < nro_indv_visual){ // cria bixinhos para serem desenhados
-			int size = nro_indv_visual - mB.size();			
+		if(SV->Bixinhos.empty() || (int)SV->Bixinhos.size() < SV->N_menu){
+			int size = SV->N_menu - SV->Bixinhos.size();			
 			for(int i=0; i<size; i++){
 				setColor(color, rand()%256, rand()%256, rand()%256);
 			
 				Bixinho A = CreateBixinho((rand()%10/10.0) +0.02, ((rand()%20)-10)/10.0, color);
-				mB.push_back(A);
+				SV->Bixinhos.push_back(A);
 			}
 		}
-		Mdraw = true;
-	
+		SV->Run = true;
 	
 
 	// Nro individuos menu
 	}else if (y > 110 && y < 135){	
-			if (x > 220 && x < 250) nro_indv_visual = 10;
-			else if (x > 265 && x < 295) nro_indv_visual = 25;
-			else if (x > 310 && x < 340) nro_indv_visual = 50;
-			else if (x > 355 && x < 385) nro_indv_visual = 100;
+			if (x > 220 && x < 250) SV->N_menu = 10;
+			else if (x > 265 && x < 295) SV->N_menu = 25;
+			else if (x > 310 && x < 340) SV->N_menu = 50;
+			else if (x > 355 && x < 385) SV->N_menu = 100;
 
 	// gene menu	
-	}else if (!MgeneMenu && x > 190 && x < 350 && y > 199 && y < 235){		
-		MgeneMenu = true; 
+	}else if (!SV->geneMenu && x > 190 && x < 350 && y > 199 && y < 235){		
+		SV->geneMenu = true; 
 		
-	}else if (MgeneMenu && x > 360 && x < 430){
+	}else if (SV->geneMenu && x > 360 && x < 430){
 		if (y > 165 && y < 200) {
-			MgeneMenu = false;
-			tipoGeme = 1;  // cor		
+			SV->geneMenu = false;
+			SV->Gene_menu = 1;  // color		
 		}else if (y > 200 && y < 235){
-			MgeneMenu = false;
-			tipoGeme = 2;  // forma		
+			SV->geneMenu = false;
+			SV->Gene_menu = 2;  // form		
 		}else if (y > 235 && y < 270){
-			MgeneMenu = false;
-			tipoGeme = 0;  // cor e forma	
+			SV->geneMenu = false;
+			SV->Gene_menu = 0;  // color & form
 		}
 		
 	// selecao
 	}else if (y > 245 && y < 275){	
-			if (x > 165 && x < 195) Blue_Cor = 0; // preto
-			else if (x > 200 && x < 230) Blue_Cor = 1; // branco
-			else if (x > 255 && x < 285) Blue_Shape = 0; // circulo
-			else if (x > 290 && x < 320) Blue_Shape = 1; // quadrado
-			else if (x > 325 && x < 355) Blue_Shape = 2; // triangulo
+			if (x > 165 && x < 195) SV->Cor_menu = 0; 
+			else if (x > 200 && x < 230) SV->Cor_menu = 1;
+			else if (x > 255 && x < 285) SV->Shape_menu = 0; 
+			else if (x > 290 && x < 320) SV->Shape_menu = 1; 
+			else if (x > 325 && x < 355) SV->Shape_menu = 2; 
 	
-	}else if (x > 155 && x < 185){	
-			if (y > 335 && y < 365) Blue_reproducao = true;
-			else if (y > 365 && y < 395) Blue_reproducao = false;
+	}else if (x > 155 && x < 185 && y < 395){	
+			if (y > 335 && y < 365) SV->Breed_menu = true;
+			else if (y > 365 && y < 395) SV->Breed_menu = false;
+
+	}else if (y > 430 && y < 455){	
+			if (x > 145 && x < 175) SV->Mutation_menu = true;
+			else if (x > 255 && x < 285) SV->Mutation_menu = false;
 	
 	// Next	
 	}else if (x > 155 && x < 245 && y > 830 && y < 875){
-		nro_indvidous = 0;
+		SV->N = 0;
 		*menu_state = *menu_state + 1;
-
 	}
-	MChange = true;
+
+	SV->Change = true;
 	return;
 }
 

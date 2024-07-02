@@ -17,7 +17,7 @@ using namespace std;
 
 
 
-void Reproducao(Sim_Var *SV){
+void Genocidio(Sim_Var *SV){
 	unsigned char color[3];
 	
 	setColor(color, WHITE);
@@ -33,6 +33,7 @@ void Reproducao(Sim_Var *SV){
 		SV->Shape   = SV->Shape_menu;
 		SV->Cor     = SV->Cor_menu;
 		SV->Breed   = SV->Breed_menu;
+		SV->Mutation= SV->Mutation_menu;
 		SV->Run 	= false;
 				
 	}
@@ -48,13 +49,13 @@ void Reproducao(Sim_Var *SV){
 
 	}else{
 		SV->Change = false;
-		draw_basic_menu("Reproduction");
+		draw_basic_menu("Genocide");
 		
 		nro_individuos(-0.95, 0.7,SV->N_menu);
 		tipo_de_gene(-0.95, 0.5, SV->Gene_menu, SV->geneMenu);	
 		draw_Selecao(-0.95, 0.4, SV->Gene_menu, SV->Shape_menu, SV->Cor_menu);
 		draw_Reproducao(-0.95, 0.2, SV->Breed_menu);
-
+        draw_Mutacao(-0.95, 0, SV->Mutation_menu);
 	}
 
 	if (SV->N){
@@ -70,7 +71,7 @@ void Reproducao(Sim_Var *SV){
 }		
 
 
-void processReproducao(Sim_Var *SV){ 
+void processGenocidio(Sim_Var *SV){ 
 	unsigned char color[3];
 
 	setColor(color, LIGHT_GREY);
@@ -119,7 +120,7 @@ void processReproducao(Sim_Var *SV){
 				if (SV->Bixinhos[i].shape != SV->Shape){ 
 					SV->Bixinhos.erase(SV->Bixinhos.begin()+i); 
 					SV->N--; 
-					Repopulate(SV, false); // false on the mutation flag
+					Repopulate(SV, true); // true on the mutation flag
 				}
 			
 			}
@@ -130,13 +131,13 @@ void processReproducao(Sim_Var *SV){
 					if(SV->Bixinhos[i].r + SV->Bixinhos[i].g + SV->Bixinhos[i].b > 192) { 
 						SV->Bixinhos.erase(SV->Bixinhos.begin()+i); 
 						SV->N--;					
-						Repopulate(SV, false); 
+						Repopulate(SV, true); 
 					}
 				}else
 					if(SV->Bixinhos[i].r + SV->Bixinhos[i].g + SV->Bixinhos[i].b < 512) { 
 						SV->Bixinhos.erase(SV->Bixinhos.begin()+i); 
 						SV->N--; 
-						Repopulate(SV, false);
+						Repopulate(SV, true);
 					}				
 			}
  		}
@@ -145,7 +146,7 @@ void processReproducao(Sim_Var *SV){
 	return;
 }
 
-void Reproducao_buttons(int x, int y, char *menu_state, Sim_Var *SV){
+void Genocidio_buttons(int x, int y, char *menu_state, Sim_Var *SV){
 	unsigned char color[3];
 	SV->Change = true;
 	
@@ -202,9 +203,13 @@ void Reproducao_buttons(int x, int y, char *menu_state, Sim_Var *SV){
 			else if (x > 290 && x < 320) SV->Shape_menu = 1; 
 			else if (x > 325 && x < 355) SV->Shape_menu = 2; 
 	
-	}else if (x > 155 && x < 185){	
+	}else if (x > 155 && x < 185 && y < 395){	
 			if (y > 335 && y < 365) SV->Breed_menu = true;
 			else if (y > 365 && y < 395) SV->Breed_menu = false;
+
+	}else if (y > 430 && y < 455){	
+			if (x > 145 && x < 175) SV->Mutation_menu = true;
+			else if (x > 255 && x < 285) SV->Mutation_menu = false;
 	
 	// Next	
 	}else if (x > 155 && x < 245 && y > 830 && y < 875){

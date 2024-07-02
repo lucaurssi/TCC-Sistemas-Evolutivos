@@ -3,11 +3,8 @@
 using namespace std;
 
 
-// Desenha a tela da fase de iniciar populacao
-void Mutacao();
+void Mutacao(Sim_Var *SV);
 
+void processMutacao(Sim_Var *SV);
 
-// move os bixinhos na tela da fase de populacao
-void processMutacao();
-
-void Mutacao_buttons(int x, int y, unsigned short int *menu_state);
+void Mutacao_buttons(int x, int y, char *menu_state, Sim_Var *SV);

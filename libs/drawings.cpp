@@ -135,7 +135,7 @@ void nro_individuos(float x, float y, int Nro_ind){
 	unsigned char color[3];
 
 	// Numero de individuos a serem criados
-	RenderString(x, y, "Nro. Individuos:");
+	RenderString(x, y, "Num. Individuals:");
 
 	setColor(color, GREY);
 
@@ -172,20 +172,20 @@ void nro_individuos(float x, float y, int Nro_ind){
 void tipo_de_gene(float x, float y, int tipoGene, bool geneMenu){
 	unsigned char color[3];
 
-	RenderString(x, y, "Tipo de genes:");
+	RenderString(x, y, "Type of genes:");
 
 	setColor(color, GREY); // cinza escuro
 	retangle(x+0.55, y+0.015, 0.35, 0.075, color); 
 
 	switch (tipoGene){
 		case 0:
-			RenderString(x+0.4, y, "Cor e Forma");	
+			RenderString(x+0.4, y, "Color/Form");	
 			break;
 		case 1:
-			RenderString(x+0.4, y, "Cor");	
+			RenderString(x+0.4, y, "Color");	
 			break;
 		case 2:
-			RenderString(x+0.4, y, "Forma");				
+			RenderString(x+0.4, y, "Form");				
 	}
 
 	if (geneMenu){
@@ -195,8 +195,8 @@ void tipo_de_gene(float x, float y, int tipoGene, bool geneMenu){
 		retangle(x+0.83, y+0.005, 0.15, 0.075, color);
 		retangle(x+0.83, y+0.075, 0.15, 0.075, color);
 
-		RenderString(x+0.76, y+0.075, "Cor");
-		RenderString(x+0.76, y, "Forma");
+		RenderString(x+0.76, y+0.075, "Color");
+		RenderString(x+0.76, y, "Form");
 		RenderString(x+0.76, y-0.08, "C e F");
 	}
 }
@@ -204,7 +204,7 @@ void tipo_de_gene(float x, float y, int tipoGene, bool geneMenu){
 void draw_Selecao(float x, float y, int tipoGene, int Nro_selecao, bool Nro_selecao_2){
 	unsigned char color[3];
 	
-	RenderString(x, y, "Selecao:");
+	RenderString(x, y, "Selection:");
 
 	if (tipoGene == 0 || tipoGene == 2){ // cor&for  && forma
 		setColor(color, GREY);
@@ -263,17 +263,17 @@ void draw_Selecao(float x, float y, int tipoGene, int Nro_selecao, bool Nro_sele
 void draw_Reproducao(float x, float y, bool blue_reproducao){
 	unsigned char color[3];
 	
-	RenderString(-0.95, 0.28, "Avaliacao:");
+	RenderString(-0.95, 0.28, "Evaluation:");
 	
-	RenderString(x, y, "Reproducao:");
+	RenderString(x, y, "Reproduction:");
 	
 	setColor(color, GREY); // circulos cinza
 
 	circle( x+0.33, y+0.02, 0.03, color); 	
-	RenderString(x+0.4, y, "Asexuada");
+	RenderString(x+0.4, y, "Asexual");
 
 	circle( x+0.33, y-0.05, 0.03, color);
-	RenderString(x+0.4, y-0.07, "Sexuada");
+	RenderString(x+0.4, y-0.07, "Sexual");
 
 
 	setColor(color, BLUE); // circulos azul
@@ -286,15 +286,15 @@ void draw_Reproducao(float x, float y, bool blue_reproducao){
 void draw_Mutacao(float x, float y, bool blue_mutacao){
 	unsigned char color[3];
 	
-	RenderString(x, y, "Mutacao:");
+	RenderString(x, y, "Mutation:");
 	
 	setColor(color, GREY); // circulos cinza
 
 	circle( x+0.3, y+0.02, 0.03, color); 	
-	RenderString(x+0.34, y, "Fixa");
+	RenderString(x+0.34, y, "Fixed");
 
 	circle( x+0.55, y+0.02, 0.03, color);
-	RenderString(x+0.59, y, "Variavel");
+	RenderString(x+0.59, y, "Variable");
 
 
 	setColor(color, BLUE); // circulos azul

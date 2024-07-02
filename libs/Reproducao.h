@@ -3,11 +3,8 @@
 using namespace std;
 
 
-// Desenha a tela da fase de iniciar populacao
-void Reproducao();
+void Reproducao(Sim_Var *SV);
 
+void processReproducao(Sim_Var *SV);
 
-// move os bixinhos na tela da fase de populacao
-void processReproducao();
-
-void Reproducao_buttons(int x, int y, unsigned short int *menu_state);
+void Reproducao_buttons(int x, int y, char *menu_state, Sim_Var *SV);

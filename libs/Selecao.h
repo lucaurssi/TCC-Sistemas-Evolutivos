@@ -1,13 +1,8 @@
 #include "drawings.h"
-#include <vector>
-using namespace std;
 
 
-// Desenha a tela da fase de iniciar populacao
-void Selecao();
+void Selecao(Sim_Var *SV);
 
+void processSelecao(Sim_Var *SV);
 
-// move os bixinhos na tela da fase de populacao
-void processSelecao();
-
-void Selecao_buttons(int x, int y, unsigned short int *menu_state);
+void Selecao_buttons(int x, int y, char *menu_state, Sim_Var *SV);

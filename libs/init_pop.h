@@ -1,13 +1,7 @@
 #include "drawings.h"
-#include <vector>
-using namespace std;
 
+void init_pop(Sim_Var *SV);
 
-// Desenha a tela da fase de iniciar populacao
-void init_pop();
+void processIPop(Sim_Var *SV);
 
-
-// move os bixinhos na tela da fase de populacao
-void processIPop();
-
-void IPop_buttons(int x, int y, unsigned short int *menu_state);
+void IPop_buttons(int x, int y, char *menu_state, Sim_Var *SV);

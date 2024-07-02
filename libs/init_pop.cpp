@@ -13,85 +13,49 @@
 using namespace std;
 
 
-vector<Bixinho> Bips;
-int n_Bips = 10;
-int N_ip = 0;
-
-int tipoGene = 1;
-int G_ip = 1;
-
-
-bool IPChange = true;
-bool IPdraw = false;
-bool IPnextPhase = false;
-bool geneMenu = false;
-
-
-void init_pop(){
+void init_pop(Sim_Var *SV){
 	unsigned char color[3];
 	
 	setColor(color, WHITE);
-	retangle(0.5, 0, 1, 2, color); // limpa bixinhos
+	retangle(0.5, 0, 1, 2, color); 
 	
 	
-	if (IPdraw){ 
-		N_ip = n_Bips;
-		G_ip = tipoGene;		
-		IPdraw = false;	
+	if (SV->Run){ 
+		SV->N = SV->N_menu;
+		SV->Gene = SV->Gene_menu;		
+		SV->Run = false;	
 		
 	}
-
-	if (!Bips.empty())
-		for(int i=0; i < N_ip; i++)
-			drawBixinho(Bips[i], G_ip);
+	if (!SV->Bixinhos.empty())
+		for(int i=0; i < SV->N; i++)
+			drawBixinho(SV->Bixinhos[i], SV->Gene);
 	
 	// ---- menu ----
 	
-
-	// cinza
 	setColor(color, LIGHT_GREY);
 	
-	if(!IPChange){// se nao apertar nada no menu, não precisa re-escrever o menu
+	if(!SV->Change){
 		retangle(-0.012, 0, 0.027, 2, color);
 		
-
 	}else{
-		IPChange = false;
+		SV->Change = false;
 		
-		retangle(-0.5, 0, 1, 2, color); // pinta metade da tela de cinza
+		retangle(-0.5, 0, 1, 2, color); 
 		
 
 		
-		setColor(color, GREY); // cinza escuro
+		setColor(color, GREY);
 		retangle(-0.8, 0.9, 0.25, 0.075, color); 
 		RenderString(-0.91, 0.88, "<-- Back");
 
-		RenderString(-0.6, 0.88, "População inicial");
+		RenderString(-0.6, 0.88, "Initial Population");
 
-		RenderString(-0.95, 0.65, "O primeiro passo para simular um sistema");
-		RenderString(-0.95, 0.60, "evolutivo eh iniciar uma população, o que");
-		RenderString(-0.95, 0.55, "significa escolher o numero de individuos");
-		RenderString(-0.95, 0.50, "a serem simulados:");
-		
+	
+		nro_individuos(-0.95, 0.4, SV->N_menu);
+		tipo_de_gene(-0.95, 0, SV->Gene_menu, SV->geneMenu);	
 
-
-		// Componente do menu que escolhe o numero de individuos
-		nro_individuos(-0.95, 0.4, n_Bips);
-
-
-		
-		RenderString(-0.95, 0.25, "O segundo passo eh decidir o que sera");
-		RenderString(-0.95, 0.20, "simulado. No caso desse exemplo temos");
-		RenderString(-0.95, 0.15, "cor e formas de bixinhos.");
-
-
-
-		tipo_de_gene(-0.95, 0, tipoGene, geneMenu);	
-
-
-
-		RenderString(-0.95, -0.30, "Escolha os genes e o numero de ");
-		RenderString(-0.95, -0.35, "individuos acima e clique em 'Run'.");
+		RenderString(-0.95, -0.30, "Choose the genes, the number ");
+		RenderString(-0.95, -0.35, "individuals and click Run.");
 
 	// --------------------------------------------------
 
@@ -102,88 +66,85 @@ void init_pop(){
 		RenderString(-0.3, -0.92, "Run");
 		// --------------------------------------
 
-		if (N_ip){ // se atualizar clicando no run, abilita o botao NEXT
+		if (SV->N){ // ''Next'' button apears after clicking run 
 			setColor(color, GREY);
 			retangle(-0.55, -0.9, 0.2, 0.09, color); 
 			
 			RenderString(-0.62, -0.92, "Next");
-			RenderString(-0.95, -0.75, "Clique em Next para passar");
-			RenderString(-0.95, -0.80, "para proxima faze.");
+			RenderString(-0.95, -0.75, "Click on Next bellow.");
 		}
 	}
 	return;
 }		
 
-// move os bixinhos na tela de menu
-void processIPop(){ 
-	if(Bips.empty()) return;	
+void processIPop(Sim_Var *SV){ 
+	if(SV->Bixinhos.empty()) return;	
 
-	// Para mover os bixinhos
-	for(int i=0; i<N_ip; i++)
-  		moveBixinho(&Bips[i], Bips[i].vel);
+	for(int i=0; i<SV->N; i++)
+  		moveBixinho(&SV->Bixinhos[i], SV->Bixinhos[i].vel);
 
 	return;
 }
 
-void IPop_buttons(int x, int y, unsigned short int *menu_state){
+void IPop_buttons(int x, int y, char *menu_state, Sim_Var *SV){
 	unsigned char color[3];
-	IPChange = true;
+	SV->Change = true;
 	
-	// voltar ao menu principal (<-- back)
+	// <-- back
 	if (x > 30 && x < 150 && y > 25 && y < 60){
-		N_ip = 0;
+		SV->N = 0;
 		*menu_state = 0; 
 	
 	// run	
 	}else if (x > 290 && x < 380 && y > 830 && y < 875){		
-		if(Bips.empty()) // cria bixinhos para serem desenhados
-			for(int i=0; i<n_Bips; i++){
+		if(SV->Bixinhos.empty())
+			for(int i=0; i<SV->N_menu; i++){
 				setColor(color, rand()%256, rand()%256, rand()%256);
 			
 				Bixinho A = CreateBixinho(rand()%10/10.0, ((rand()%20)-10)/10.0, color);
-				Bips.push_back(A);
+				SV->Bixinhos.push_back(A);
 			}
-		IPdraw = true;
+		SV->Run = true;
 
 	// Next	
 	}else if (x > 155 && x < 245 && y > 830 && y < 875){
-		N_ip =0;
+		SV->N =0;
 		*menu_state = *menu_state + 1;
 
 	// Nro individuos menu
 	}else if (y > 245 && y < 275){	
-			if (x > 220 && x < 250) n_Bips = 10;
-			else if (x > 265 && x < 295) n_Bips = 25;
-			else if (x > 310 && x < 340) n_Bips = 50;
-			else if (x > 355 && x < 385) n_Bips = 100;
+			if (x > 220 && x < 250) SV->N_menu = 10;
+			else if (x > 265 && x < 295) SV->N_menu = 25;
+			else if (x > 310 && x < 340) SV->N_menu = 50;
+			else if (x > 355 && x < 385) SV->N_menu = 100;
 			
-			int size = n_Bips - Bips.size(); // se aumentar o numero de bixinhos, cria novos bixinhos			
+			int size = SV->N_menu - SV->Bixinhos.size(); 			
 			for(int i=0; i<size; i++){
 				setColor(color, rand()%256, rand()%256, rand()%256);
 			
 				Bixinho A = CreateBixinho((rand()%10/10.0) +0.02, ((rand()%20)-10)/10.0, color);
-				Bips.push_back(A);
+				SV->Bixinhos.push_back(A);
 			}
 
 	// gene menu	
-	}else if (!geneMenu && x > 190 && x < 350 && y > 420 && y < 460)		
-		geneMenu = true; 
+	}else if (!SV->geneMenu && x > 190 && x < 350 && y > 420 && y < 460)		
+		SV->geneMenu = true; 
 		
-	else if (geneMenu && x > 360 && x < 430){
+	else if (SV->geneMenu && x > 360 && x < 430){
 		if (y > 390 && y < 425) {
-			geneMenu = false;
-			tipoGene = 1;  // cor		
+			SV->geneMenu = false;
+			SV->Gene_menu = 1;  // color		
 		}else if (y > 425 && y < 460){
-			geneMenu = false;
-			tipoGene = 2;  // forma		
+			SV->geneMenu = false;
+			SV->Gene_menu = 2;  // form		
 		}else if (y > 460 && y < 495){
-			geneMenu = false;
-			tipoGene = 0;  // cor e forma	
+			SV->geneMenu = false;
+			SV->Gene_menu = 0;  // color e form
 		}
 		
 	}
 
-	IPChange = true;
+	SV->Change = true;
 	return;
 }
 
